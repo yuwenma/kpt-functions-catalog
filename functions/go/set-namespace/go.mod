@@ -2,7 +2,7 @@ module github.com/GoogleContainerTools/kpt-functions-catalog/functions/go/set-na
 
 go 1.17
 
-require github.com/GoogleContainerTools/kpt-functions-sdk/go/fn v0.0.0-20220316202203-f9115a993ebd
+require github.com/GoogleContainerTools/kpt-functions-sdk/go/fn v0.0.0-20220322205615-b3b2aa33ba46
 
 require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
@@ -24,6 +24,6 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
-	k8s.io/kube-openapi v0.0.0-20220316025549-ddc66922ab18 // indirect
+	k8s.io/kube-openapi v0.0.0-20220322231758-52feaf8c35bf // indirect
 	sigs.k8s.io/kustomize/kyaml v0.13.3 // indirect
 )
