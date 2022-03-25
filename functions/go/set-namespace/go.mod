@@ -2,7 +2,10 @@ module github.com/GoogleContainerTools/kpt-functions-catalog/functions/go/set-na
 
 go 1.17
 
-require github.com/GoogleContainerTools/kpt-functions-sdk/go/fn v0.0.0-20220322205615-b3b2aa33ba46
+require (
+	github.com/GoogleContainerTools/kpt-functions-sdk/go/fn v0.0.0-20220322205615-b3b2aa33ba46
+	k8s.io/apimachinery v0.23.4
+)
 
 require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
