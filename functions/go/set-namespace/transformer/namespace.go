@@ -98,22 +98,9 @@ func VisitNamespaces(objects []*fn.KubeObject, callback func(ns *Namespace)) {
 		case o.IsGVK("apiregistration.k8s.io/v1", "APIService"):
 			fields := []string{"spec", "service", "namespace"}
 			callback(NewNamespace(o, fields))
-		/* TODO(yuwenma): waiting for the new features in kpt-functions-sdk to merge in.
 		case o.GetKind() == "ClusterRoleBinding" || o.GetKind() == "RoleBinding":
-		subjects := o.GetSliceOrDie("subjects")
-		for _, s := range subjects {
-			if s.GetKind() == "ServiceAccount" {
-				ns := s.GetNamespace()
-				visitor(ns, false)
-				nsCollector <- func() {
-					nsPtr := &ns
-					p.updateNamespace(nsPtr)
-					s.SetNamespace(*nsPtr)
-					o.SetOrDie(&subjects, "subjects")
-				}
-			}
-		}
-		*/
+			fields := []string{"subjects", "kind=ServiceAccount", "namespace"}
+			callback(NewNamespace(o, fields))
 		case o.HasNamespace():
 			// Only update the namespace scoped resource. To determine if a resource is namespace scoped,
 			// we assume its namespace should have been set.
@@ -148,7 +135,7 @@ func ReplaceNamespace(objects []*fn.KubeObject, oldNs, newNs string) {
 		if ns.Name == "" {
 			return
 		}
-		if ns.Name == oldNs {
+		if oldNs == "" || ns.Name == oldNs {
 			ns.Set(newNs)
 		}
 	})
@@ -219,6 +206,9 @@ func (p *NamespaceTransformer) GetOldNamespace(fromResources []string, nsCount m
 			"but found different namespaces: %v ", strings.Join(fromResources, ","))
 		p.Errors = append(p.Errors, msg)
 		return "", false
+	}
+	if len(fromResources) == 0 {
+		return "", true
 	}
 	return fromResources[0], true
 }
