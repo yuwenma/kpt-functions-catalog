@@ -19,7 +19,8 @@ import (
 )
 
 const (
-	fnConfigAPIVersion  = "fn.kpt.dev/v1alpha1"
+	fnConfigVersion     = "v1alpha1"
+	fnConfigGroup       = "fn.kpt.dev"
 	fnConfigKind        = "SetNamespace"
 	dependsOnAnnotation = "config.kubernetes.io/depends-on"
 	groupIdx            = 0
