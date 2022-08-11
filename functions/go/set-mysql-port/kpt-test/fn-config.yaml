@@ -1,0 +1,6 @@
+apiVersion: fn.kpt.dev/v1alpha1
+kind: SetMysqlPort
+metadata:
+  name: mariadb
+spec:
+  port: 3000

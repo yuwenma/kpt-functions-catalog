@@ -1,0 +1,137 @@
+apiVersion: config.kubernetes.io/v1
+kind: ResourceList
+items:
+- apiVersion: fn.kpt.dev/v1alpha1
+  kind: SetMysqlPort
+  metadata:
+    name: mariadb
+    annotations:
+      config.kubernetes.io/index: '0'
+      config.kubernetes.io/path: 'fn-config.yaml'
+      internal.config.kubernetes.io/index: '0'
+      internal.config.kubernetes.io/path: 'fn-config.yaml'
+      internal.config.kubernetes.io/seqindent: 'compact'
+  spec:
+    port: 3000
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: mariadb-internal-4ftgd48d67
+    annotations:
+      config.kubernetes.io/local-config: "true"
+      internal.kpt.dev/generator-builtin-only: fn.kpt.dev|ConfigMapGenerator|example|mariadb
+      config.kubernetes.io/index: '0'
+      config.kubernetes.io/path: 'resouces.yaml'
+      internal.config.kubernetes.io/index: '0'
+      internal.config.kubernetes.io/path: 'resouces.yaml'
+      internal.config.kubernetes.io/seqindent: 'compact'
+    namespace: example
+  data:
+    cm.client.default-character-set: UTF8
+    cm.client.plugin_dir: /opt/bitnami/mariadb/plugin
+    cm.client.port: "3306"
+    cm.client.socket: /opt/bitnami/mariadb/tmp/mysql.sock
+    cm.manager.pid-file: /opt/bitnami/mariadb/tmp/mysqld.pid
+    cm.manager.port: "3306"
+    cm.manager.socket: /opt/bitnami/mariadb/tmp/mysql.sock
+    cm.mysqld.basedir: /opt/bitnami/mariadb
+    cm.mysqld.bind-address: '*'
+    cm.mysqld.character-set-server: UTF8
+    cm.mysqld.collation-server: utf8_general_ci
+    cm.mysqld.log-error: /opt/bitnami/mariadb/logs/mysqld.log
+    cm.mysqld.long_query_time: "10.0"
+    cm.mysqld.max_allowed_packet: 16M
+    cm.mysqld.pid-file: /opt/bitnami/mariadb/tmp/mysqld.pid
+    cm.mysqld.plugin_dir: /opt/bitnami/mariadb/plugin
+    cm.mysqld.port: "3306"
+    cm.mysqld.slow_query_log: "0"
+    cm.mysqld.slow_query_log_file: /opt/bitnami/mariadb/logs/mysqld.log
+    cm.mysqld.socket: /opt/bitnami/mariadb/tmp/mysql.sock
+    cm.mysqld.tmpdir: /opt/bitnami/mariadb/tmp
+- # Source: ghost/charts/mariadb/templates/primary/statefulset.yaml
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata: # kpt-merge: example/mariadb
+    name: mariadb
+    namespace: example
+    labels:
+      app.kubernetes.io/name: mariadb
+    annotations:
+      internal.kpt.dev/upstream-identifier: 'apps|StatefulSet|example|mariadb'
+      config.kubernetes.io/index: '1'
+      config.kubernetes.io/path: 'resouces.yaml'
+      internal.config.kubernetes.io/index: '1'
+      internal.config.kubernetes.io/path: 'resouces.yaml'
+      internal.config.kubernetes.io/seqindent: 'wide'
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    serviceName: mariadb
+    updateStrategy:
+      type: RollingUpdate
+    template:
+      spec:
+        securityContext:
+          fsGroup: 1001
+        containers:
+        - name: mariadb
+          image: docker.io/bitnami/mariadb:10.6.7-debian-10-r62
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+          env:
+          - name: BITNAMI_DEBUG
+            value: "true"
+          - name: MARIADB_USER
+            value: bn_ghost
+          - name: MARIADB_DATABASE
+            value: bitnami_ghost
+          - name: ALLOW_EMPTY_PASSWORD
+            value: "true"
+          ports:
+          - name: mysql
+            containerPort: 3306
+          resources:
+            limits: {}
+            requests: {}
+          volumeMounts:
+          - name: data
+            mountPath: /bitnami/mariadb
+          - name: config
+            mountPath: /opt/bitnami/mariadb/conf/my.cnf
+            subPath: my.cnf
+        volumes:
+        - name: config
+          configMap:
+            name: mariadb-dk42c26c9f
+      metadata:
+        labels:
+          app.kubernetes.io/name: mariadb
+    volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app.kubernetes.io/name: mariadb
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 8Gi
+    selector:
+      matchLabels:
+        app.kubernetes.io/name: mariadb
+functionConfig:
+  apiVersion: fn.kpt.dev/v1alpha1
+  kind: SetMysqlPort
+  metadata:
+    name: mariadb
+    annotations:
+      config.kubernetes.io/index: '0'
+      config.kubernetes.io/path: 'fn-config.yaml'
+      internal.config.kubernetes.io/index: '0'
+      internal.config.kubernetes.io/path: 'fn-config.yaml'
+      internal.config.kubernetes.io/seqindent: 'compact'
+  spec:
+    port: 3000
